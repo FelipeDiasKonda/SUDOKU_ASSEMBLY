@@ -91,6 +91,7 @@ MEDIO2:
     pulalinha
     CALL MEDIO
     CALL MATRIZ_OUT
+    CALL LEITURA
     JMP FIM
 DIFICIL2:
     CMP AL,'3'
@@ -98,6 +99,7 @@ DIFICIL2:
     pulalinha
     CALL DIFICIL
     CALL MATRIZ_OUT
+    CALL LEITURA
     JMP FIM
 ERRO:
     MOV AH,09
