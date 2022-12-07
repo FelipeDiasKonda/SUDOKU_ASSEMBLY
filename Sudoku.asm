@@ -412,8 +412,11 @@ ERRO:
     PUSH BX
     PUSH SI
     XOR BX,BX
+    XOR CX,CX
+    INC CX
     INC BX
     INC SI
+    NEW_BUSINESS:
         MOV AH,09
         LEA DX,MSGLER1
         INT 21H
@@ -421,7 +424,7 @@ ERRO:
         INT 21H
         XOR DX,DX
         MOV AH,02
-        MOV DX,BX
+        MOV DL,CL
         OR DL,30H
         INT 21H
         MOV AH,02
@@ -431,16 +434,17 @@ ERRO:
         MOV DX,SI
         OR DL,30H
         INT 21H
-    NEW_BUSINESS:
         MOV AH,00H
         INT 16H
         CMP AH,72
         JNE COMPBAIXO
         SUB BX,LIN
+        SUB CL,1
     COMPBAIXO:
         CMP AH,80
         JNE COMPDIREITA
         ADD BX,LIN
+        ADD CL,1
     COMPDIREITA:
         CMP AH,4DH
         JNE COMPESQUERDA
@@ -452,6 +456,7 @@ ERRO:
     ENTER1:
         CMP AX,1C0DH
         JNE NEW_BUSINESS
+
 POP SI 
 POP BX
     RET
