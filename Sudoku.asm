@@ -4,6 +4,9 @@ TITLE ENTRADA E E SAIDA DE MATRIZ, INVERSAO DE LINHAS POR COLUNAS
 .DATA
 menu db '[1]FACIL',10,'[2]MEDIO',10,'[3]DIFICIL',10,'Qual a dificuldade voce deseja escolher->$'
 FACIL3 DB '=========================',10,'DIFICULDADE FACIL',10,'=========================$'
+MEDIO3 DB '=========================',10,'DIFICULDADE MEDIO',10,'=========================$'
+DIFICIL3 DB '=========================',10,'DIFICULDADE DIFICIL',10,'=========================$'
+ERRO1 DB 10,'ERRO NA LEITURA POR FAVOR DIGITE NOVAMENTE:$'
 LIN  EQU  9
 COL  EQU  9
     MATRIZ DB LIN DUP(COL DUP(?))
@@ -28,27 +31,47 @@ LINHA2 DB 0CCH, 8 DUP (3 DUP (0CDH), 0CEH), 3 DUP (0CDH), 0B9H , 10,'$'
         INT 10H
         MOV AH,0BH
         MOV BH,00H       
-        MOV BL,8            ;cor de fundo
+        MOV BL,0          ;cor de fundo
         INT 10H
         MOV AH,0Bh   
-        MOV BH,8            ;FUncao para trocar a cor das letras
-        MOV BL,1            ;seleciona a paleta 0
+        MOV BH,1           ;FUncao para trocar a cor das letras
+        MOV BL,0            ;seleciona a paleta 
         INT 10H
         MOV AX,@DATA;
-        MOV DS,AX   ; Inicia o segmento de dados
+        MOV DS,AX   ; Inicia o segmento de dados     
         MOV AH,09
         LEA DX, menu
         INT 21H
+INICIO:
         MOV AH,01
         INT 21H
-        
-        CMP AL,01
-        JE FACIL2
-
-    FACIL2:
+        OR AL,30H
+FACIL2:
+        CMP AL,'1'
+        JNE MEDIO2
         pulalinha
         CALL FACIL
        CALL MATRIZ_OUT
+       JMP FIM
+MEDIO2:
+    CMP AL,'2'
+    JNE DIFICIL2
+    pulalinha
+    CALL MEDIO
+    CALL MATRIZ_OUT
+    JMP FIM
+DIFICIL2:
+    CMP AL,'3'
+    JNE ERRO
+    pulalinha
+    CALL DIFICIL
+    CALL MATRIZ_OUT
+    JMP FIM
+ERRO:
+    MOV AH,09
+    LEA DX,ERRO1
+    INT 21H
+    JMP INICIO
     FIM:
         MOV AH,4CH
         INT 21H
@@ -180,9 +203,189 @@ LINHA2 DB 0CCH, 8 DUP (3 DUP (0CDH), 0CEH), 3 DUP (0CDH), 0B9H , 10,'$'
         RET  
     FACIL ENDP
 
-    MEDIO PROC   
+    MEDIO PROC  
+         MOV AH,09h
+        LEA DX,MEDIO3
+        INT 21H
+        pulalinha
+        XOR BX,BX
+        XOR SI,SI
+            INC SI
+            MOV MATRIZ [BX][SI],6
+            ADD SI,3
+            MOV MATRIZ [BX][SI],7
+            ADD SI, 3
+            MOV MATRIZ [BX][SI],1
+        ADD BX, LIN
+        XOR SI,SI
+            ADD SI, 2
+            MOV MATRIZ [BX][SI],8
+            INC SI
+            MOV MATRIZ [BX][SI],5
+            INC SI
+            MOV MATRIZ [BX][SI],6
+            ADD SI,4
+            MOV MATRIZ [BX][SI],9
+        ADD BX, LIN
+        XOR SI,SI
+            MOV MATRIZ [BX][SI],3
+            ADD SI, 4
+            MOV MATRIZ [BX][SI],1
+            ADD SI,2
+            MOV MATRIZ [BX][SI],5
+            ADD SI,2
+            MOV MATRIZ [BX][SI],7
+        ADD BX, LIN
+        XOR SI,SI
+        ADD SI,4
+            MOV MATRIZ [BX][SI],5
+            INC SI
+            MOV MATRIZ [BX][SI],1
+        ADD BX, LIN
+        XOR SI,SI
+            ADD SI,2
+            MOV MATRIZ [BX][SI],6
+            INC SI
+            MOV MATRIZ [BX][SI],7
+        ADD BX,LIN
+        XOR SI,SI
+            INC SI
+            MOV MATRIZ [BX][SI],8
+            INC SI
+            MOV MATRIZ [BX][SI],7
+            ADD SI,2
+            MOV MATRIZ [BX][SI],3
+            INC SI
+            MOV MATRIZ [BX][SI],2
+            ADD SI,2
+            MOV MATRIZ [BX][SI],4
+            INC SI
+            MOV MATRIZ [BX][SI],1
+        ADD BX, LIN
+        XOR SI,SI    
+            
+            MOV MATRIZ [BX][SI],6
+            ADD SI,4
+            MOV MATRIZ [BX][SI],9
+            ADD SI, 3
+            MOV MATRIZ [BX][SI],5
+            INC SI
+            MOV MATRIZ [BX][SI],2
+        ADD BX, LIN
+        XOR SI,SI
+            INC SI
+            MOV MATRIZ [BX][SI],7
+            ADD SI,2
+            MOV MATRIZ [BX][SI],8
+            ADD SI, 2
+            MOV MATRIZ [BX][SI],5
+        ADD BX, LIN
+        XOR SI,SI
+    
+            MOV MATRIZ [BX][SI],8
+            INC SI
+            MOV MATRIZ [BX][SI],5
+            ADD SI,3
+            MOV MATRIZ [BX][SI],2
+            INC SI
+            MOV MATRIZ [BX][SI],6
+            INC SI
+            MOV MATRIZ [BX][SI],1
+            ADD SI,2
+            MOV MATRIZ [BX][SI],4
+        RET   
     MEDIO ENDP
 
     DIFICIL PROC
+         MOV AH,09h
+        LEA DX,DIFICIL3
+        INT 21H
+        pulalinha
+        XOR BX,BX
+        XOR SI,SI
+            INC SI
+            MOV MATRIZ [BX][SI],6
+            ADD SI,3
+            MOV MATRIZ [BX][SI],7
+            ADD SI, 3
+            MOV MATRIZ [BX][SI],1
+        ADD BX, LIN
+        XOR SI,SI
+            ADD SI, 2
+            MOV MATRIZ [BX][SI],8
+            INC SI
+            MOV MATRIZ [BX][SI],5
+            INC SI
+            MOV MATRIZ [BX][SI],6
+            ADD SI,4
+            MOV MATRIZ [BX][SI],9
+        ADD BX, LIN
+        XOR SI,SI
+            MOV MATRIZ [BX][SI],3
+            ADD SI, 4
+            MOV MATRIZ [BX][SI],1
+            ADD SI,2
+            MOV MATRIZ [BX][SI],5
+            ADD SI,2
+            MOV MATRIZ [BX][SI],7
+        ADD BX, LIN
+        XOR SI,SI
+        ADD SI,4
+            MOV MATRIZ [BX][SI],5
+            INC SI
+            MOV MATRIZ [BX][SI],1
+        ADD BX, LIN
+        XOR SI,SI
+            ADD SI,2
+            MOV MATRIZ [BX][SI],6
+            INC SI
+            MOV MATRIZ [BX][SI],7
+        ADD BX,LIN
+        XOR SI,SI
+            INC SI
+            MOV MATRIZ [BX][SI],8
+            INC SI
+            MOV MATRIZ [BX][SI],7
+            ADD SI,2
+            MOV MATRIZ [BX][SI],3
+            INC SI
+            MOV MATRIZ [BX][SI],2
+            ADD SI,2
+            MOV MATRIZ [BX][SI],4
+            INC SI
+            MOV MATRIZ [BX][SI],1
+        ADD BX, LIN
+        XOR SI,SI    
+            
+            MOV MATRIZ [BX][SI],6
+            ADD SI,4
+            MOV MATRIZ [BX][SI],9
+            ADD SI, 3
+            MOV MATRIZ [BX][SI],5
+            INC SI
+            MOV MATRIZ [BX][SI],2
+        ADD BX, LIN
+        XOR SI,SI
+            INC SI
+            MOV MATRIZ [BX][SI],7
+            ADD SI,2
+            MOV MATRIZ [BX][SI],8
+            ADD SI, 2
+            MOV MATRIZ [BX][SI],5
+        ADD BX, LIN
+        XOR SI,SI
+    
+            MOV MATRIZ [BX][SI],8
+            INC SI
+            MOV MATRIZ [BX][SI],5
+            ADD SI,3
+            MOV MATRIZ [BX][SI],2
+            INC SI
+            MOV MATRIZ [BX][SI],6
+            INC SI
+            MOV MATRIZ [BX][SI],1
+            ADD SI,2
+            MOV MATRIZ [BX][SI],4
+        RET  
     DIFICIL ENDP
-END MAIN
+    end main
