@@ -11,6 +11,9 @@ MSGLER1 DB 10,'ANDE PARA A CASA DESEJADA COM AS SETAS DO TECLADO$'
 MSGLER DB 10,'VOCE ESTA NA CASA->$'
 LERNUMERO DB 10,'AGORA BASTA DIGITAR O NUMERO QUE DESEJA INSERIR->$'
 ADICIONARNUM DB 'DESEJA ADICIONAR OUTRO NUMERO(S/N)->$'
+NUMEROERRADO DB 10,'NUMERO ERRADO$'
+PERDEU DB 10,'VOCE PERDEU$'
+PARABENS DB 10,'PARABENS VOCE GANHOU O SUDOKU$'
 FACILGABARITO DB 4, 6, 5, 2, 7, 9, 3, 1, 8
               DB 7, 1, 8, 5, 6, 3, 4, 2, 9  
               DB 3, 9, 2, 4, 1, 8, 5, 6, 7
@@ -87,6 +90,7 @@ FACIL2:
         CALL FACIL
         CALL MATRIZ_OUT
         CALL LEITURA
+        CALL CORRIGE_MAT
         JMP FIM
 MEDIO2:
     CMP AL,'2'
@@ -95,6 +99,7 @@ MEDIO2:
     CALL MEDIO
     CALL MATRIZ_OUT
     CALL LEITURA
+    CALL CORRIGE_MAT
     JMP FIM
 DIFICIL2:
     CMP AL,'3'
@@ -103,6 +108,7 @@ DIFICIL2:
     CALL DIFICIL
     CALL MATRIZ_OUT
     CALL LEITURA
+    CALL CORRIGE_MAT
     JMP FIM
 ERRO:
     MOV AH,09
@@ -467,6 +473,7 @@ ERRO:
         INT 21H
         MOV AH,01
         INT 21H
+    IGUAL:
         MOV MATRIZ [BX][SI],AL
         pulalinha
         MOV AH,09
@@ -474,15 +481,46 @@ ERRO:
         INT 21h
         MOV AH,01
         INT 21H
-        CMP AL,'N'
+        CMP AL,'n'
         JE EXIT
         MOV AH,06
         MOV AL,00
         INT 10H
         pulalinha
         CALL MATRIZ_OUT
+        INC CL
+        INC CH
+        XOR BX,BX
+        XOR SI,SI
         JMP COMECO
 EXIT:
     RET
     LEITURA ENDP
+    CORRIGE_MAT PROC
+        XOR BX,BX
+        XOR SI,SI
+        XOR CX,CX
+        MOV AL,MATRIZ[BX][SI]
+        MOV CX,9
+    CORRIGE:
+        INC SI
+        ADD AL,MATRIZ[BX][SI]
+        LOOP CORRIGE
+        CMP AL,45
+        JNE ERRADO
+        INC DX
+        CMP DX,9
+        JE IGUAL4
+    ERRADO:
+        MOV AH,09
+        LEA DX,PERDEU
+        INT 21H
+        JMP EXIT2
+    IGUAL4:
+    MOV AH,09
+    LEA DX,PARABENS
+    INT 21H
+    EXIT2:
+    RET
+    CORRIGE_MAT ENDP
     end main
