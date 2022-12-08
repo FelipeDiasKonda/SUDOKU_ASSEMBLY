@@ -14,6 +14,7 @@ ADICIONARNUM DB 'DESEJA ADICIONAR OUTRO NUMERO(S/N)->$'
 NUMEROERRADO DB 10,'NUMERO ERRADO$'
 PERDEU DB 10,'VOCE PERDEU$'
 PARABENS DB 10,'PARABENS VOCE GANHOU O SUDOKU$'
+JOGARDENOVO DB 10,'VOCE GOSTARIA DE JOGAR DE NOVO(S/N)?$'
 FACILGABARITO DB 4, 6, 5, 2, 7, 9, 3, 1, 8
               DB 7, 1, 8, 5, 6, 3, 4, 2, 9  
               DB 3, 9, 2, 4, 1, 8, 5, 6, 7
@@ -77,7 +78,7 @@ LINHA2 DB 0CCH, 8 DUP (3 DUP (0CDH), 0CEH), 3 DUP (0CDH), 0B9H , 10,'$'
         MOV AX,@DATA;
         MOV DS,AX   ; Inicia o segmento de dados     
         MOV AH,09
-        LEA DX, menu
+         LEA DX, menu
         INT 21H
 INICIO:
         MOV AH,01
@@ -508,6 +509,7 @@ EXIT:
         LOOP CORRIGE
         CMP AL,45
         JNE ERRADO
+        ADD BX,LIN
         INC DX
         CMP DX,9
         JE IGUAL4
