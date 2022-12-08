@@ -2,7 +2,9 @@ TITLE ENTRADA E E SAIDA DE MATRIZ, INVERSAO DE LINHAS POR COLUNAS
 .MODEL SMALL
 .STACK 100h
 .DATA
-menu db '[1]FACIL',10,'[2]MEDIO',10,'[3]DIFICIL',10,'Qual a dificuldade voce deseja escolher->$'
+menu db 10,'[1]FACIL',10,'[2]MEDIO',10,'[3]DIFICIL',10,'Qual a dificuldade voce deseja escolher->$'
+MENU2 DB 'BEM VINDO AO PROJETO DO SUDOKU EM ASSEMBLY X86',10,'ESSE PROJETO FOI DESENVOLVIDO PELOS ALUNOS FELIPE KONDA E EDUARDO PERUCELLO$'
+MENU3 DB 10,'========================',10,'SELECIONE A DIFICULDADE',10,'========================$'
 FACIL3 DB '=========================',10,'DIFICULDADE FACIL',10,'=========================$'
 MEDIO3 DB '=========================',10,'DIFICULDADE MEDIO',10,'=========================$'
 DIFICIL3 DB '=========================',10,'DIFICULDADE DIFICIL',10,'=========================$'
@@ -78,7 +80,11 @@ MENU1:  MOV AH,0
         INT 10H
         MOV AX,@DATA;
         MOV DS,AX   ; Inicia o segmento de dados     
-          MOV AH,09
+        MOV AH,09
+        LEA DX,MENU2
+        INT 21H
+        LEA DX,MENU3
+        INT 21H
         LEA DX, menu
         INT 21H
 INICIO:
