@@ -1,22 +1,23 @@
-TITLE ENTRADA E E SAIDA DE MATRIZ, INVERSAO DE LINHAS POR COLUNAS
+TITLE Eduardo de Faria Rios Perucello - 22009978
+TITLE Felip Dias Konda - 22008026
 .MODEL SMALL
 .STACK 100h
 .DATA
-menu db 10,'[1]FACIL',10,'[2]MEDIO',10,'[3]DIFICIL',10,'Qual a dificuldade voce deseja escolher->$'
-MENU2 DB 'BEM VINDO AO PROJETO DO SUDOKU EM ASSEMBLY X86',10,'ESSE PROJETO FOI DESENVOLVIDO PELOS ALUNOS FELIPE KONDA E EDUARDO PERUCELLO$'
-MENU3 DB 10,'========================',10,'SELECIONE A DIFICULDADE',10,'========================$'
-FACIL3 DB '=========================',10,'DIFICULDADE FACIL',10,'=========================$'
-MEDIO3 DB '=========================',10,'DIFICULDADE MEDIO',10,'=========================$'
-DIFICIL3 DB '=========================',10,'DIFICULDADE DIFICIL',10,'=========================$'
+menu db 10,10,'              [1]FACIL','              [2]MEDIO','              [3]DIFICIL',10,10,'                    Qual a dificuldade voce deseja escolher->$'
+MENU2 DB 10,'                 BEM VINDO AO PROJETO DO SUDOKU EM ASSEMBLY X86',10,'  ESSE PROJETO FOI DESENVOLVIDO PELOS ALUNOS FELIPE KONDA E EDUARDO PERUCELLO$'
+MENU3 DB 10,10,'===============================================================================',10,'                             SELECIONE A DIFICULDADE',10,'===============================================================================$'
+FACIL3 DB '===============================================================================',10,'                             DIFICULDADE FACIL',10,'===============================================================================$'
+MEDIO3 DB '===============================================================================',10,'                             DIFICULDADE MEDIO  ',10,'===============================================================================$'
+DIFICIL3 DB '===============================================================================',10,'                             DIFICULDADE DIFICIL  ',10,'===============================================================================$'
 ERRO1 DB 10,'ERRO NA LEITURA POR FAVOR DIGITE NOVAMENTE:$'
 MSGLER1 DB 10,'ANDE PARA A CASA DESEJADA COM AS SETAS DO TECLADO$'
 MSGLER DB 10,'VOCE ESTA NA CASA->$'
 LERNUMERO DB 10,'AGORA BASTA DIGITAR O NUMERO QUE DESEJA INSERIR->$'
 ADICIONARNUM DB 'DESEJA ADICIONAR OUTRO NUMERO(S/N)->$'
 NUMEROERRADO DB 10,'NUMERO ERRADO$'
-PERDEU DB 10,'VOCE PERDEU$'
-PARABENS DB 10,'PARABENS VOCE GANHOU O SUDOKU$'
-JOGARDENOVO DB 10,'VOCE GOSTARIA DE JOGAR DE NOVO(S/N)?$'
+PERDEU DB 10,'===============================================================================',10,'                                 VOCE PERDEU',10,'===============================================================================$'
+PARABENS DB 10,'===============================================================================',10,'                          PARABENS VOCE GANHOU O SUDOKU',10,'===============================================================================$'
+JOGARDENOVO DB 10,'  VOCE GOSTARIA DE JOGAR DE NOVO(S/N)?$'
 FACILGABARITO DB 4, 6, 5, 2, 7, 9, 3, 1, 8
               DB 7, 1, 8, 5, 6, 3, 4, 2, 9  
               DB 3, 9, 2, 4, 1, 8, 5, 6, 7
