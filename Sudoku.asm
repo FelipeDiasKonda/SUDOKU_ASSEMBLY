@@ -64,7 +64,8 @@ LINHA2 DB 0CCH, 8 DUP (3 DUP (0CDH), 0CEH), 3 DUP (0CDH), 0B9H , 10,'$'
     ENDM
 
     MAIN PROC
-        MOV AH,0
+    
+MENU1:  MOV AH,0
         MOV AL,06h  
         INT 10H
         MOV AH,0BH
@@ -77,8 +78,8 @@ LINHA2 DB 0CCH, 8 DUP (3 DUP (0CDH), 0CEH), 3 DUP (0CDH), 0B9H , 10,'$'
         INT 10H
         MOV AX,@DATA;
         MOV DS,AX   ; Inicia o segmento de dados     
-        MOV AH,09
-         LEA DX, menu
+          MOV AH,09
+        LEA DX, menu
         INT 21H
 INICIO:
         MOV AH,01
@@ -92,6 +93,13 @@ FACIL2:
         CALL MATRIZ_OUT
         CALL LEITURA
         CALL CORRIGE_MAT
+        MOV AH,09
+        LEA DX,JOGARDENOVO
+        INT 21H
+        MOV AH,01
+        INT 21H
+        CMP AL,'s'
+        JE MENU1
         JMP FIM
 MEDIO2:
     CMP AL,'2'
@@ -101,6 +109,14 @@ MEDIO2:
     CALL MATRIZ_OUT
     CALL LEITURA
     CALL CORRIGE_MAT
+    MOV AH,09
+    LEA DX,JOGARDENOVO
+    INT 21H
+    MOV AH,01
+    INT 21H
+    CMP AL,'s'
+    JE TESTE
+    JMP FIM
     JMP FIM
 DIFICIL2:
     CMP AL,'3'
@@ -110,12 +126,22 @@ DIFICIL2:
     CALL MATRIZ_OUT
     CALL LEITURA
     CALL CORRIGE_MAT
+    MOV AH,09
+    LEA DX,JOGARDENOVO
+    INT 21H
+    MOV AH,01
+    INT 21H
+    CMP AL,'s'
+    JE TESTE
+    JMP FIM
     JMP FIM
 ERRO:
     MOV AH,09
     LEA DX,ERRO1
     INT 21H
     JMP INICIO
+TESTE:
+JMP MENU1
     FIM:
         MOV AH,4CH
         INT 21H
