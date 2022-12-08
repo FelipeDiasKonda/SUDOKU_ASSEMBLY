@@ -7,8 +7,10 @@ FACIL3 DB '=========================',10,'DIFICULDADE FACIL',10,'===============
 MEDIO3 DB '=========================',10,'DIFICULDADE MEDIO',10,'=========================$'
 DIFICIL3 DB '=========================',10,'DIFICULDADE DIFICIL',10,'=========================$'
 ERRO1 DB 10,'ERRO NA LEITURA POR FAVOR DIGITE NOVAMENTE:$'
-MSGLER1 DB 10,'ANDE PARA A CASA DESEJADA COM AS TECLAS(W,A,S,D)$'
+MSGLER1 DB 10,'ANDE PARA A CASA DESEJADA COM AS SETAS DO TECLADO$'
 MSGLER DB 10,'VOCE ESTA NA CASA->$'
+LERNUMERO DB 10,'AGORA BASTA DIGITAR O NUMERO QUE DESEJA INSERIR->$'
+ADICIONARNUM DB 'DESEJA ADICIONAR OUTRO NUMERO(S/N)->$'
 FACILGABARITO DB 4, 6, 5, 2, 7, 9, 3, 1, 8
               DB 7, 1, 8, 5, 6, 3, 4, 2, 9  
               DB 3, 9, 2, 4, 1, 8, 5, 6, 7
@@ -57,7 +59,7 @@ LINHA2 DB 0CCH, 8 DUP (3 DUP (0CDH), 0CEH), 3 DUP (0CDH), 0B9H , 10,'$'
 	    INT 21h 
     ENDM
     MAIN PROC
-         MOV AH,0
+        MOV AH,0
         MOV AL,06h  
         INT 10H
         MOV AH,0BH
@@ -82,9 +84,9 @@ FACIL2:
         JNE MEDIO2
         pulalinha
         CALL FACIL
-       CALL MATRIZ_OUT
-       CALL LEITURA
-       JMP FIM
+        CALL MATRIZ_OUT
+        CALL LEITURA
+        JMP FIM
 MEDIO2:
     CMP AL,'2'
     JNE DIFICIL2
@@ -409,14 +411,11 @@ ERRO:
         RET  
     DIFICIL ENDP
     LEITURA PROC
-    PUSH BX
-    PUSH SI
     XOR BX,BX
     XOR CX,CX
     INC CX
-    INC BX
     INC SI
-    NEW_BUSINESS:
+ COMECO:
         MOV AH,09
         LEA DX,MSGLER1
         INT 21H
@@ -433,32 +432,54 @@ ERRO:
         MOV AH,02
         MOV DX,SI
         OR DL,30H
-        INT 21H
+        INT 21H      
         MOV AH,00H
         INT 16H
         CMP AH,72
         JNE COMPBAIXO
         SUB BX,LIN
         SUB CL,1
+        JMP comeco
     COMPBAIXO:
         CMP AH,80
         JNE COMPDIREITA
         ADD BX,LIN
         ADD CL,1
+        JMP COMECO
     COMPDIREITA:
         CMP AH,4DH
         JNE COMPESQUERDA
         INC SI
+        JMP COMECO
     COMPESQUERDA:
         CMP AH,4BH
         JNE ENTER1
         DEC SI
+        JMP COMECO
     ENTER1:
         CMP AX,1C0DH
-        JNE NEW_BUSINESS
-
-POP SI 
-POP BX
+        JNE COMECO
+        MOV AH,09
+        LEA DX,LERNUMERO
+        INT 21H
+        MOV AH,01
+        INT 21H
+        MOV MATRIZ [BX][SI],AL
+        pulalinha
+        MOV AH,09
+        LEA DX,ADICIONARNUM
+        INT 21h
+        MOV AH,01
+        INT 21H
+        CMP AL,'N'
+        JE EXIT
+        MOV AH,06
+        MOV AL,00
+        INT 10H
+        pulalinha
+        CALL MATRIZ_OUT
+        JMP COMECO
+EXIT:
     RET
     LEITURA ENDP
     end main
