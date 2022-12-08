@@ -58,6 +58,7 @@ LINHA2 DB 0CCH, 8 DUP (3 DUP (0CDH), 0CEH), 3 DUP (0CDH), 0B9H , 10,'$'
         MOV AH,09h         
 	    INT 21h 
     ENDM
+
     MAIN PROC
         MOV AH,0
         MOV AL,06h  
@@ -413,8 +414,8 @@ ERRO:
     LEITURA PROC
     XOR BX,BX
     XOR CX,CX
-    INC CX
-    INC SI
+    INC CL
+    INC CH
  COMECO:
         MOV AH,09
         LEA DX,MSGLER1
@@ -430,7 +431,7 @@ ERRO:
         MOV DL,'x'
         INT 21H
         MOV AH,02
-        MOV DX,SI
+        MOV DL,CH
         OR DL,30H
         INT 21H      
         MOV AH,00H
@@ -450,11 +451,13 @@ ERRO:
         CMP AH,4DH
         JNE COMPESQUERDA
         INC SI
+        INC CH
         JMP COMECO
     COMPESQUERDA:
         CMP AH,4BH
         JNE ENTER1
         DEC SI
+        DEC CH
         JMP COMECO
     ENTER1:
         CMP AX,1C0DH
