@@ -530,7 +530,7 @@ EXIT:
     RET
     LEITURA ENDP
 
-    CORRIGE_MAT PROC              ;Funcao para corrigir se a resposta do Sudoku esta certa ou nao
+    CORRIGE_MAT PROC              ;Procedimento para corrigir se a resposta do Sudoku esta certa ou nao
         XOR BX,BX                 ;Zera o BX
         XOR SI,SI                 ;Zera o SI
         XOR CX,CX                 ;Zera p CX
