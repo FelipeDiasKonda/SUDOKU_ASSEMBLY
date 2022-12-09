@@ -449,77 +449,78 @@ JMP MENU1
         MOV MATRIZ [BX][SI],1
         RET  
     DIFICIL ENDP
-    LEITURA PROC
-    XOR BX,BX
-    XOR CX,CX
-    INC CL
-    INC CH
+
+    LEITURA PROC                       ;Procedimento onde faremos a leitura da posicao, leitura do numero desejado e se quer jogar de novo
+    XOR BX,BX                          ;Zera BX    
+    XOR CX,CX                          ;Zera CX
+    INC CL                             ;Incrementa CL
+    INC CH                             ;Incrementa CH
  COMECO:
-        MOV AH,09
+        MOV AH,09                      ;Funcao para printar a MSGLER1 e MSGLER
         LEA DX,MSGLER1
         INT 21H
         LEA DX,MSGLER
         INT 21H
-        XOR DX,DX
-        MOV AH,02
-        MOV DL,CL
-        OR DL,30H
+        XOR DX,DX                      ;Zera DX
+        MOV AH,02  
+        MOV DL,CL                      ;Printa o valor de DL que eh a posicao da coluna
+        OR DL,30H                      ;Transforma Dl em caracter 
         INT 21H
         MOV AH,02
-        MOV DL,'x'
+        MOV DL,'x'                     ;Printa o X
         INT 21H
         MOV AH,02
-        MOV DL,CH
-        OR DL,30H
-        INT 21H      
-        MOV AH,00H
+        MOV DL,CH                      ;Printa o valor de DL que eh a posicao da linha
+        OR DL,30H                      ;Transforam DL em caracter
+        INT 21H       
+        MOV AH,00H                     ;Funcao para limpar a tela
         INT 16H
-        CMP AH,72
-        JNE COMPBAIXO
-        SUB BX,LIN
-        SUB CL,1
-        JMP comeco
-    COMPBAIXO:
+        CMP AH,72                      ;Compara AH com o Scan Code da seta para cima 
+        JNE COMPBAIXO                  ;Se nao for ele pula para COMPBAIXO que ira comparar com a seta para baixo
+        SUB BX,LIN                     ;Subtrai LIn que tem 9 de BX para voltar uma coluna para cima 
+        SUB CL,1                       ;Subtrai 1 de CL que esta sendo impresso como posicao
+        JMP comeco  
+    COMPBAIXO:                         ;Compara AH com o Scan Code da seta para baixo
         CMP AH,80
-        JNE COMPDIREITA
-        ADD BX,LIN
-        ADD CL,1
+        JNE COMPDIREITA                ;Se nao for igual ele ira para COMPDIREITA 
+        ADD BX,LIN                     ;Adiciona LIN que tem 9 para BX para ir uma coluna para baixo
+        ADD CL,1                       ;Adiciona 1 em CL que esta sendo impresso como posicao
         JMP COMECO
-    COMPDIREITA:
+    COMPDIREITA:                       ;Compara AH com o Scan Code da seta para direita
         CMP AH,4DH
-        JNE COMPESQUERDA
-        INC SI
-        INC CH
+        JNE COMPESQUERDA               ;Se nao for igual ele ira para COMPESQUERDA
+        INC SI                         ;Incrementa 1 em SI para pular uma linha para direita
+        INC CH                         ;Incrementa 1 em CH que esta sendo impresso como posicao
         JMP COMECO
-    COMPESQUERDA:
+    COMPESQUERDA:                      ;Compara AH com o Scan Code da seta para esquerda
         CMP AH,4BH
-        JNE ENTER1
-        DEC SI
-        DEC CH
+        JNE ENTER1                     ;Se nao for igual ele ira para ENTER1
+        DEC SI                         ;Decrementa 1 em SI para pular uma linha para a esquerda
+        DEC CH                         ;Decrementa 1 em CH que esta sendo impresso como posicao
         JMP COMECO
-    ENTER1:
-        CMP AX,1C0DH
-        JNE COMECO
+    ENTER1:                            ;Compara AX com o Enter 
+        CMP AX,1C0DH                   
+        JNE COMECO                     ;Se nao for ele ira para o COMECO
         MOV AH,09
-        LEA DX,LERNUMERO
+        LEA DX,LERNUMERO               ;Imprime a mensagem que esta em LERNUMERO
         INT 21H
-        MOV AH,01
+        MOV AH,01                      
         INT 21H
-    IGUAL:
+    IGUAL:                             ;Ele adiciona o numero na matriz e pergunta se quer jogar de novo
         MOV MATRIZ [BX][SI],AL
         pulalinha
         MOV AH,09
-        LEA DX,ADICIONARNUM
+        LEA DX,ADICIONARNUM            ;Imprime a mensagem que esta em ADICIONARNUM
         INT 21h
-        MOV AH,01
+        MOV AH,01                      ;Le um caracter
         INT 21H
-        CMP AL,'n'
-        JE EXIT
+        CMP AL,'n'                     ;Compara AL com o 'n'
+        JE EXIT                        ;Se for igual ele vai para o EXIT que volta para a MAIN e termina o programa 
         MOV AH,06
         MOV AL,00
         INT 10H
         pulalinha
-        CALL MATRIZ_OUT
+        CALL MATRIZ_OUT                ;Chama o procedimento para pirntar a matriz, que estara modificada com as alteracoes de numeros feita pelo usuario
         INC CL
         INC CH
         XOR BX,BX
@@ -528,28 +529,29 @@ JMP MENU1
 EXIT:
     RET
     LEITURA ENDP
-    CORRIGE_MAT PROC
-        XOR BX,BX
-        XOR SI,SI
-        XOR CX,CX
-        MOV AL,MATRIZ[BX][SI]
-        MOV CX,9
+
+    CORRIGE_MAT PROC              ;Funcao para corrigir se a resposta do Sudoku esta certa ou nao
+        XOR BX,BX                 ;Zera o BX
+        XOR SI,SI                 ;Zera o SI
+        XOR CX,CX                 ;Zera p CX
+        MOV AL,MATRIZ[BX][SI]     ;Coloca o valor da posicao em AL
+        MOV CX,9                 
     CORRIGE:
         INC SI
-        ADD AL,MATRIZ[BX][SI]
-        LOOP CORRIGE
-        CMP AL,45
-        JNE ERRADO
-        ADD BX,LIN
-        INC DX
-        CMP DX,9
-        JE IGUAL4
-    ERRADO:
+        ADD AL,MATRIZ[BX][SI]     
+        LOOP CORRIGE              ;Loop para comparar as duas matrizes
+        CMP AL,45                 ;Compara com 45 porque em um jogo de Sudoku a soma da linha e da coluna tem que ser 45
+        JNE ERRADO                ;Se nao der 45 vai para o ERRADO qeu e onde ira imprimir a mensagem de PERDEU
+        ADD BX,LIN                ;Adiciona LIN que vale 9 para pular de linha
+        INC DX                    
+        CMP DX,9           
+        JE IGUAL4                 ;Se for igual a 45 ele vai para o IGUAL4 onde ira imprimir a mensagem de PARABENS
+    ERRADO:                       ;Ira printar a mensagem de PERDEU
         MOV AH,09
         LEA DX,PERDEU
         INT 21H
         JMP EXIT2
-    IGUAL4:
+    IGUAL4:                       ;Ira printar a mensagem de PARABENS
     MOV AH,09
     LEA DX,PARABENS
     INT 21H
