@@ -1,5 +1,5 @@
 TITLE Eduardo de Faria Rios Perucello - 22009978
-TITLE Felip Dias Konda - 22008026
+TITLE Felipe Dias Konda - 22008026
 .MODEL SMALL
 .STACK 100h
 .DATA
@@ -55,142 +55,140 @@ LINHA  DB 0BAH, 20H, '$'
 LINHA2 DB 0CCH, 8 DUP (3 DUP (0CDH), 0CEH), 3 DUP (0CDH), 0B9H , 10,'$'
  
 .CODE
-    pulalinha macro
+    pulalinha macro         ;macro de pular linha
     mov ah,02h
     mov dl,10
     int 21h
     endm
-    PRINT MACRO MENSAGEM
+    PRINT MACRO MENSAGEM    ;macro de printar mensagem 
         LEA DX,MENSAGEM
         MOV AH,09h         
 	    INT 21h 
     ENDM
 
-    MAIN PROC
+    MAIN PROC               ;inicio da main
     
-MENU1:  MOV AH,0
+MENU1:  MOV AH,0            ;modo de resolução
         MOV AL,06h  
         INT 10H
-        MOV AH,0BH
+        MOV AH,0BH          ;função para mudar a cor de fundo
         MOV BH,00H       
-        MOV BL,0          ;cor de fundo
+        MOV BL,0            ;cor de fundo
         INT 10H
         MOV AH,0Bh   
-        MOV BH,1           ;FUncao para trocar a cor das letras
+        MOV BH,1            ;FUncao para trocar a cor das letras
         MOV BL,0            ;seleciona a paleta 
         INT 10H
         MOV AX,@DATA;
-        MOV DS,AX   ; Inicia o segmento de dados     
+        MOV DS,AX           ; Inicia o segmento de dados     
         MOV AH,09
-        LEA DX,MENU2
+        LEA DX,MENU2        ;aqui oomeçam os prints do menu
         INT 21H
         LEA DX,MENU3
         INT 21H
-        LEA DX, menu
+        LEA DX, menu        ;print de selecionar a dificuldade
         INT 21H
 INICIO:
-        MOV AH,01
+        MOV AH,01           ;le a dificuldade escolhida e transforma em numero para efetuar as comparações
         INT 21H
         OR AL,30H
 FACIL2:
-        CMP AL,'1'
-        JNE MEDIO2
-        pulalinha
-        CALL FACIL
-        CALL MATRIZ_OUT
-        CALL LEITURA
-        CALL CORRIGE_MAT
+        CMP AL,'1'          ;verifica se a dificuldade escolhida foi a facil
+        JNE MEDIO2          ;caso nao for a facil ele da um jump para ver se eh a medio
+        pulalinha           ;macro de pular linha
+        CALL FACIL          ;chama a funcao que preenche a MATRIZ com os numeros do facil
+        CALL MATRIZ_OUT     ;chama a função que print a matriz
+        CALL LEITURA        ;chama a função que faz a leitura de tudo que o usuario deseja inserir na matriz
+        CALL CORRIGE_MAT    ;chama a função que verifica se o usuario acertou o sudoku
         MOV AH,09
-        LEA DX,JOGARDENOVO
+        LEA DX,JOGARDENOVO  ;verifica se o usuario deseja jogar de novo
         INT 21H
         MOV AH,01
         INT 21H
         CMP AL,'s'
-        JE MENU1
-        JMP FIM
+        JE MENU1            ;caso o usuario deseje jogar de novo ele salta para o menu
+        JMP FIM             ;caso ele nao queira ele vai para o fim do programa
 MEDIO2:
-    CMP AL,'2'
-    JNE DIFICIL2
-    pulalinha
-    CALL MEDIO
-    CALL MATRIZ_OUT
-    CALL LEITURA
-    CALL CORRIGE_MAT
+    CMP AL,'2'              ;verifica se a dificuldade escolhida foi o medio
+    JNE DIFICIL2            ;caso nao tenha sido ele vai verificar se eh a dificil
+    pulalinha               ;macro de pular linha
+    CALL MEDIO              ;chama a função que preenche a matriz com os numeros do medio
+    CALL MATRIZ_OUT         ;printa a matriz
+    CALL LEITURA            ;chama a função que faz a leitura de tudo que o usuario deseja inserir na matriz
+    CALL CORRIGE_MAT        ;chama a função que verifica se o usuario acertou o sudoku
     MOV AH,09
-    LEA DX,JOGARDENOVO
+    LEA DX,JOGARDENOVO      ;verifica se o usuario deseja jogar de novo
     INT 21H
     MOV AH,01
     INT 21H
-    CMP AL,'s'
-    JE TESTE
-    JMP FIM
-    JMP FIM
+    CMP AL,'s'              ;caso ele queira ele vai pro teste e esse teste ele vai pro inicio
+    JE TESTE                ;coloquei esse je teste pois o comeco estava muito longe e o jump nao funcionava
+    JMP FIM                 ;caso nao queira jogar dnovo ele da um jump pro fim
 DIFICIL2:
-    CMP AL,'3'
-    JNE ERRO
-    pulalinha
-    CALL DIFICIL
-    CALL MATRIZ_OUT
-    CALL LEITURA
-    CALL CORRIGE_MAT
+    CMP AL,'3'              ;verifica se a dificuldade escolhida foi a dificil
+    JNE ERRO                ;caso nao seja ele vai pra mensagem de erro, e pede a entrada denovo
+    pulalinha               ;macro de pular linha
+    CALL DIFICIL            ;preenche a matriz com os numeros da dificuldade dificil
+    CALL MATRIZ_OUT         ;printa a matriz
+    CALL LEITURA            ;chama a função que faz a leitura de tudo que o usuario deseja inserir na matriz
+    CALL CORRIGE_MAT        ;chama a função que verifica se o usuario acertou o sudoku
     MOV AH,09
-    LEA DX,JOGARDENOVO
+    LEA DX,JOGARDENOVO      ;mensagem de jogar denovo
     INT 21H
     MOV AH,01
     INT 21H
-    CMP AL,'s'
-    JE TESTE
-    JMP FIM
-    JMP FIM
+    CMP AL,'s'              ;caso ele queira ele vai pro teste e esse teste ele vai pro inicio
+    JE TESTE                ;coloquei esse je teste pois o comeco estava muito longe e o jump nao funcionava
+    JMP FIM                 ;caso nao queira jogar dnovo ele da um jump pro fim
 ERRO:
     MOV AH,09
     LEA DX,ERRO1
-    INT 21H
-    JMP INICIO
+    INT 21H                 ;mensagem de erro 
+    JMP INICIO              ;jmp para ler denovo a dificuldade
 TESTE:
 JMP MENU1
     FIM:
-        MOV AH,4CH
+        MOV AH,4CH          ;fim do programa
         INT 21H
     MAIN ENDP
 
-    MATRIZ_OUT PROC ; Proc para leitura e impressao de matriz
-        XOR BX,BX
+    MATRIZ_OUT PROC         ;procedimento para imprimir a matriz
+        XOR BX,BX           ;zera os registradores que serao usados para andar na matriz
         XOR SI,SI
         
         PRINT MOLDURA
 
-        MOV CL, LIN             ; Usado como contador de linhas    
+        MOV CL, LIN         ;Usado como contador de linhas    
 
-        OUT1:                           ;   
-            MOV CH, COL                 ; Usado como contador de colunas  
-            OUT2:                       ; 
+        OUT1:                             
+            MOV CH, COL     ;contador de colunas  
+            OUT2:                        
                 PRINT LINHA
                 MOV AH, 02h  
-                MOV DL, MATRIZ[BX][SI]  ; Copia a informacao da matriz para DL(entrada padrao para função 02h)  
-                OR DL, 30h              ; Converte para caracter
-                INT 21h                 ;   
+                MOV DL, MATRIZ[BX][SI]  ;Copia a informacao da matriz para DL  
+                OR DL, 30h              ;Converte para caracter
+                INT 21h                    
                 MOV DL, 20H
                 INT 21H             
-                INC SI                  ; Atualiza o endereço da matriz, deslocando para a proxima coluna  
-                DEC CH                  ;   
-            JNZ OUT2                ; LOOP1
+                INC SI                  ;Atualiza o endereço da matriz, deslocando para a proxima coluna  
+                DEC CH                     
+            JNZ OUT2                 
             MOV DL, 0BAH
             INT 21H
-            MOV DL, 10              ; 
-            INT 21h                 ; LINE FEED
+            MOV DL, 10               
+            INT 21h               
             PRINT LINHA2  
-            ADD BX, LIN             ; Desloca uma linha na matriz  
-            XOR SI,SI               ; Reseta as colunas
-            DEC CL                  ;   
-        JNZ OUT1                ; LOOP2 (nao utilizado LOOP, pois estamos utilizando CX para outro "loop" temos um loop1 dentro do outro loop2)
+            ADD BX, LIN                 ;Desloca uma linha na matriz  
+            XOR SI,SI                   ;Reseta as colunas
+            DEC CL                     
+        JNZ OUT1                
         RET
     MATRIZ_OUT ENDP
 
-    FACIL PROC
+    FACIL PROC                          ;procedimento usado para preencher a matriz com os numeros pre colocados
         MOV AH,09h
-        LEA DX,FACIL3
-        INT 21H
+        LEA DX,FACIL3                   ;neste procedimento foram usados os registradores BX e SI para andar na matriz
+        INT 21H                         ;onde o BX eh para as linhas e o SI para andar entre as colunas
         pulalinha
         XOR BX,BX
         XOR SI,SI
@@ -281,10 +279,10 @@ JMP MENU1
     FACIL ENDP
 
     MEDIO PROC  
-         MOV AH,09h
-        LEA DX,MEDIO3
-        INT 21H
-        pulalinha
+        MOV AH,09h
+        LEA DX,MEDIO3                   ;procedimento usado para preencher a matriz com os numeros pre colocados
+        INT 21H                         ;neste procedimento foram usados os registradores BX e SI para andar na matriz
+        pulalinha                       ;onde o BX eh para as linhas e o SI para andar entre as colunas
         XOR BX,BX
         XOR SI,SI
             INC SI
@@ -383,9 +381,9 @@ JMP MENU1
 
     DIFICIL PROC
          MOV AH,09h
-        LEA DX,DIFICIL3
-        INT 21H
-        pulalinha
+        LEA DX,DIFICIL3                 ;procedimento usado para preencher a matriz com os numeros pre colocados
+        INT 21H                         ;neste procedimento foram usados os registradores BX e SI para andar na matriz
+        pulalinha                       ;onde o BX eh para as linhas e o SI para andar entre as colunas
         XOR BX,BX
         XOR SI,SI
             ADD SI, 2
